@@ -18,11 +18,13 @@ def connect_to_mysql():
     try:
         # Connect to MySQL localhost using root credentials
         connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="1234",  # If there's a password, add it here
+            host='54.153.63.65',
+            user='streamlit_user',
+            password='SecurePassword123',  # If there's a password, add it here
             database="dsci551_project_trial"  # Specify a default database, if any
         )
+
+
         if connection.is_connected():
             st.success("Connected to MySQL database successfully!")
             return connection

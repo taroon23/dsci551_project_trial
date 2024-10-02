@@ -1,8 +1,3 @@
-# app.py
-import streamlit as st
-
-# Title of the app
-st.title("Chat DB")
 import streamlit as st
 import pandas as pd
 import mysql.connector
@@ -58,47 +53,44 @@ def upload_and_display_csv():
 
 # Main logic for page navigation
 def main():
-    # Add a page selector for SQL or NoSQL choice
-    st.title("Choose SQL or NoSQL")
-    choice = st.radio("Which type of database would you like to use?", ("SQL", "NoSQL"))
-
-    # Continue button to move to the next page
-    if st.button("Continue"):
-        if choice == "SQL":
-            st.session_state["db_type"] = "SQL"
-            st.experimental_rerun()  # Move to next page
-        elif choice == "NoSQL":
-            st.session_state["db_type"] = "NoSQL"
-            st.experimental_rerun()
-
-    # Second page after selecting SQL or NoSQL
-    if "db_type" in st.session_state:
-        if st.session_state["db_type"] == "SQL":
-            # Try connecting to MySQL
-            st.title("SQL Database")
-            connection = connect_to_mysql()
-            if connection:
-                st.write("You are connected to the MySQL database.")
-                # Optionally: Add further MySQL operations here
-        elif st.session_state["db_type"] == "NoSQL":
-            st.title("NoSQL Database (CSV)")
-            # Step 1: Select from available databases
-            st.write("Select a database from the list or upload your own CSV:")
-            option = st.selectbox(
-                "Choose from pre-existing databases",
-                ["None"] + list(DATABASES.keys())
-            )
-
-            # Step 2: Load the selected database or allow CSV upload
-            if option != "None":
-                df = load_csv_from_database(option)
-                st.write(f"Displaying data from {option}:")
-                st.dataframe(df)
-            else:
-                df = upload_and_display_csv()
-
-# Initialize the app with default settings
-if __name__ == "__main__":
+    # Initialize session state if not already set
     if "db_type" not in st.session_state:
         st.session_state["db_type"] = None
+
+    # Step 1: Database Type Selection
+    if st.session_state["db_type"] is None:
+        st.title("Choose SQL or NoSQL")
+        choice = st.radio("Which type of database would you like to use?", ("SQL", "NoSQL"))
+
+        # Continue button to move to the next page
+        if st.button("Continue"):
+            st.session_state["db_type"] = choice  # Set the chosen type
+
+    # Step 2: Database Interaction based on the choice
+    if st.session_state["db_type"] == "SQL":
+        # Try connecting to MySQL
+        st.title("SQL Database")
+        connection = connect_to_mysql()
+        if connection:
+            st.write("You are connected to the MySQL database.")
+            # Optionally: Add further MySQL operations here
+    elif st.session_state["db_type"] == "NoSQL":
+        st.title("NoSQL Database (CSV)")
+        # Step 1: Select from available databases
+        st.write("Select a database from the list or upload your own CSV:")
+        option = st.selectbox(
+            "Choose from pre-existing databases",
+            ["None"] + list(DATABASES.keys())
+        )
+
+        # Step 2: Load the selected database or allow CSV upload
+        if option != "None":
+            df = load_csv_from_database(option)
+            st.write(f"Displaying data from {option}:")
+            st.dataframe(df)
+        else:
+            df = upload_and_display_csv()
+
+# Run the main function
+if __name__ == "__main__":
     main()

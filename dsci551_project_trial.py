@@ -3,6 +3,10 @@ import pandas as pd
 import mysql.connector
 import os
 
+
+# Get the host IP address from environment variables
+ip_address = os.environ.get('HOST_IP')
+
 # Path to the folder where the CSV files are stored
 DATA_FOLDER = "Data"
 
@@ -72,9 +76,10 @@ def main():
     if st.session_state["db_type"] == "SQL":
         # Try connecting to MySQL
         st.title("SQL Database")
-        connection = connect_to_mysql()
-        if connection:
-            st.write("You are connected to the MySQL database.")
+        st.write(ip_address)
+        #connection = connect_to_mysql()
+        #if connection:
+        #    st.write("You are connected to the MySQL database.")
             # Optionally: Add further MySQL operations here
     elif st.session_state["db_type"] == "NoSQL":
         st.title("NoSQL Database (CSV)")

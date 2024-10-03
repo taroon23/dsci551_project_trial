@@ -76,10 +76,25 @@ def main():
     if st.session_state["db_type"] == "SQL":
         # Try connecting to MySQL
         st.title("SQL Database")
-        st.write(ip_address)
+
+        st.write("Select a database from the list or upload your own CSV:")
+        option = st.selectbox(
+            "Choose from pre-existing databases",
+            ["None"] + list(DATABASES.keys())
+        )
+
+        # Step 2: Load the selected database or allow CSV upload
+        if option != "None":
+            df = load_csv_from_database(option)
+            st.write(f"Displaying data from {option}:")
+            st.dataframe(df)
+        else:
+            df = upload_and_display_csv()
+
         #connection = connect_to_mysql()
         #if connection:
         #    st.write("You are connected to the MySQL database.")
+        
             # Optionally: Add further MySQL operations here
     elif st.session_state["db_type"] == "NoSQL":
         st.title("NoSQL Database (CSV)")
